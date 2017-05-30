@@ -20,7 +20,16 @@ def loop():
     t = json.loads(r.text) # the results are concateneted in a json format python understand
     print t['weather'] #debug
     meteo = t['weather'][0]['id'] # real data used
-    s.write('int(meteo)') #send to the arduino through an integer
+    meteoInt = int(meteo)
+
+    # write can only handle int between 0 to 255. Let's split our id :
+    centaine = meteoInt/256
+    dizaine = meteoInt % 256
+
+    s.write([255]) # tell arduino an id will be sent
+    s.write([centaine]) #send to the arduino through an integer
+    s.write([dizaine])
+
     print int(meteo) #debug
     time.sleep(1)
 
@@ -32,11 +41,6 @@ def checkLoop():
 
 if __name__ == '__main__':
     setup()
-    r = requests.get('http://api.openweathermap.org/data/2.5/weather?id=2659496&APPID=aacbb81c3ddd5bd5176b4bc64424022d') # results in json format
-    t = json.loads(r.text) # the results are concateneted in a json format python understand
-    meteo = t['weather'][0]['id'] # real data used. meteo is a unicode type
-    s.write('int(meteo)') #send to the arduino through an integer
-    print int(meteo) #debug where id correspond to clouds, clear sky, fog... see http://openweathermap.org/weather-conditions 
     while True:
         checkLoop()
         loop()
