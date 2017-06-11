@@ -74,6 +74,8 @@ Exécuter un script au boot :
 		}
 
 
-	Ou le START 100 est la priorité d exécution au démarrage. Il faut le mettre à 100 pour laisser le temps au wifi de démarrer.
-	Ensuite autoriser le fichier à s exécuter : chmod +x _nomFichier_ ensuite l ajouter à la liste des script à exécuter au boot : /etc/init.d/_nomFichier_ enable
-	Finalement alle dans le répertoire du fichier que va lancer le script et aussi faire : Meteo.py enable
+Ou le START 100 est la priorité d exécution au démarrage. Il faut le mettre à 100 pour laisser le temps au wifi de démarrer.
+Ensuite autoriser le fichier à s exécuter : chmod +x _nomFichier_ ensuite l ajouter à la liste des script à exécuter au boot : 		/etc/init.d/_nomFichier_ enable
+Finalement alle dans le répertoire du fichier que va lancer le script et aussi faire : Meteo.py enable
+
+Tutoriel complet : https://wiki.openwrt.org/doc/techref/initscripts
