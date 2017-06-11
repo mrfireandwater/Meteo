@@ -21,7 +21,8 @@ openweathermap api key : aacbb81c3ddd5bd5176b4bc64424022d
 requete pour neuch, temps actuel: 
 	r = requests.get('http://api.openweathermap.org/data/2.5/weather?id=2659496&APPID=aacbb81c3ddd5bd5176b4bc64424022d')
  " 	...	", prévison :
-	r = requests.get('http://api.openweathermap.org/data/2.5/forecast?id=2659496&APPID=aacbb81c3ddd5bd5176b4bc64424022d')
+
+r = requests.get('http://api.openweathermap.org/data/2.5/forecast?id=2659496&APPID=aacbb81c3ddd5bd5176b4bc64424022d')
 
 extraire une partie (ex weather)
 	import json
@@ -53,3 +54,26 @@ Liste type de temps :
 doc comm MPU et MCU mediatek
 	https://docs.labs.mediatek.com/resource/linkit-smart-7688/en/tutorials/linkit-smart-7688-duo/mpu-mcu-uart-connection
 
+Exécuter un script au boot :
+	Aller dans /etc/inid.d, créer un fichier avec vim _nomFichier_ puis insérer ce contenu dedans :
+		
+		#!/bin/sh /etc/rc.common
+		# Example script
+		# Copyright (C) 2007 OpenWrt.org
+		START=100
+		STOP=15
+		start() {        
+			echo start
+			cd ..
+			python ether/Meteo.py
+			# commands to launch application
+		}                
+		stop() {          
+			echo stop
+			# commands to kill application 
+		}
+
+
+	Ou le START 100 est la priorité d exécution au démarrage. Il faut le mettre à 100 pour laisser le temps au wifi de démarrer.
+	Ensuite autoriser le fichier à s exécuter : chmod +x _nomFichier_ ensuite l ajouter à la liste des script à exécuter au boot : /etc/init.d/_nomFichier_ enable
+	Finalement alle dans le répertoire du fichier que va lancer le script et aussi faire : Meteo.py enable
