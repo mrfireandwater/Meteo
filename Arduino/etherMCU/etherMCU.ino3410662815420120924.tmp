@@ -7,7 +7,7 @@
  * DATE           : 10 June 2017
  * CONTACT        : louis.udry@he-arc.ch loic.rochat@he-arc.ch
  * 
- * ACKNOWLEDGMENT : Gerald Huguenin and Florien Sauser, our semester teacher for providing their knowledge
+ * ACKNOWLEDGMENT : Gerald Hugenin and Florien Sauser, our semester teacher for providing their knowledge
  *                  during the project.
  * 
  */
@@ -48,7 +48,7 @@
  */
 #define pinServo 11 // pin the servo is attached to
 #define closePos 180 // pos where galettes look like the sun
-#define openPos 10 // pos where galettes look like clouds
+#define openPos 60 // pos where galettes look like clouds
 Servo myservo; // declare the servo we are gonna use
 
 /*
@@ -59,7 +59,6 @@ int flag = 0; // to know if this is the first or second clap. flag = 0 -> wait f
 #define borneInf 200 // minimum milliseconds between to hands' clap
 #define borneSup 400 // maximum milliseconds between to hands' clap
 const byte interruptPin = 3; // output electronic microphone circut linked to linkit D3
-int light = 0; // 1 = on. 0 = off
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(numLEDs*3, pinLEDs, NEO_GRB + NEO_KHZ800); // declare the led strip
 
@@ -71,6 +70,11 @@ int id = 0; // actual id of the weather
 int tab[2]; // purpose of buffer for "data"
 int i = 0;
 
+/*
+ * time related values
+ */
+int t_interval = 900; // 900 seconds = 15 minutes
+int t_buffer = 0; // to store local timer
 
 void setup() {
   Serial.begin(9600);  // open serial connection to USB Serial port (connected to your computer)
@@ -83,12 +87,12 @@ void setup() {
   strip.begin();
   strip.setBrightness(150);
 
-  myservo.attach(pinServo);
+  //myservo.attach(pinServo);
 
   pinMode(interruptPin,INPUT);
   pinMode(pinLEDs, OUTPUT);
   pinMode(pinServo, OUTPUT);
-  //attachInterrupt(digitalPinToInterrupt(interruptPin),blink,CHANGE);
+  attachInterrupt(digitalPinToInterrupt(interruptPin),blink,CHANGE);
   
   demo(); //launch the demo
   }
@@ -98,53 +102,36 @@ void loop() {
   checkData(data);
 }
 
-/*
- * FUNCTION : demo of the differents weather states and color
- * INPUT :    nothing
- * OUTPUT :   nothing
- * OTHER : called once on startup
- */
 void demo(){
-  light = 1; // tell the light is on.
   //sunup with clouds
-  Serial.println("sunup with clouds");
   ServoPos(openPos);
-  SetColor(400, 255, 150, 0, 0); // clear yellow (morning)
+  SetColor(400, 255, 255, 0, 0); // clear yellow (morning)
   SetColor(400, 255, 255, 255, 1); // white
   SetColor(400, 255, 255, 255, 2); // white
-  delay(2000);
 
   //sun
-  Serial.println("sun");
   ServoPos(closePos);
-  SetColor(400, 255, 150, 0, 0); // clear yellow (morning)
-  SetColor(400, 255, 150, 0, 1); // clear yellow (morning)
-  SetColor(400, 255, 150, 0, 2); // clear yellow (morning)
-  delay(2000);
+  SetColor(400, 255, 255, 0, 0); // clear yellow (morning)
+  SetColor(400, 255, 255, 0, 1); // clear yellow (morning)
+  SetColor(400, 255, 255, 0, 2); // clear yellow (morning)
 
   // sun + clouds
-  Serial.println("sun + clouds");
   ServoPos(openPos);
   SetColor(400, 255, 100, 0, 0); // yellow
   SetColor(400, 255, 255, 150, 1); // blue white
   SetColor(400, 255, 255, 150, 2); // blue white
-  delay(2000);
 
   // brocken clouds
-  Serial.println("brocken clouds");
   ServoPos(openPos);
   SetColor(400, 255, 255, 255, 0); // bluewhite
   SetColor(400, 255, 255, 150, 1); // blue white
   SetColor(400, 255, 255, 150, 2); // blue white
-  delay(2000);
 
   //sunset
-  Serial.println("sunset");
-  ServoPos(openPos); //clouds
-  SetColor(400, 255, 40, 90, 0); // pink
+  ServoPos(closePos); //clouds
+  SetColor(400, 255, 90, 145, 0); // pink
   SetColor(400, 255, 194, 240, 1); // white-pink
   SetColor(400, 255, 194, 240, 2); // white-pink
-  delay(2000);
   
 }
 
@@ -170,7 +157,6 @@ void ClapClap(){
     //second clap
     Serial.println(millis()-t);
     Serial.println("hands clapping");
-    LightOnOff();
     flag = 0;
   }
   else if (flag == 1 && ((millis()-t) <= borneSup)){ //if longer than borneSup, there isn't a second clap
@@ -178,27 +164,6 @@ void ClapClap(){
   }
   else{
     flag = 0;
-  }
-}
-
-/*
- * FUNCTION : turn on or off the lamp after hand clapping
- * INPUT :    nothing
- * OUTPUT :   nothing
- * OTHER : called by ClapClap()
- */
-void LightOnOff(){
-  if(light == 1){
-    SetColor(200, 0, 0, 0, 0); // red = not implemented
-    SetColor(200, 0, 0, 0, 1); // red = not implemented
-    SetColor(200, 0, 0, 0, 2); // red = not implemented
-    light = 0;
-  }
-  else if(light == 0){
-    SetColor(200, 255, 255, 255, 0); // red = not implemented
-    SetColor(200, 255, 255, 255, 1); // red = not implemented
-    SetColor(200, 255, 255, 255, 2); // red = not implemented
-    light = 1;
   }
 }
 
