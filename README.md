@@ -30,6 +30,7 @@ extraire une partie (ex weather)
 	print(t['weather'])
 	sortie : >>> [{'id': 741, 'main': 'Fog', 'description': 'fog', 'icon': '50d'}
 
+
 extraire le 'Fog' :
 	print(t["weather"][0]["main"])
 
@@ -79,3 +80,5 @@ Ensuite autoriser le fichier à s exécuter : chmod +x _nomFichier_ ensuite l aj
 Finalement alle dans le répertoire du fichier que va lancer le script et aussi faire : Meteo.py enable
 
 Tutoriel complet : https://wiki.openwrt.org/doc/techref/initscripts
+
+Interrupt sur l'atmega32u4 sur le linkit 7688 duo. Ce qui marche : déclarer le pin interrupt en 1 dans le code et le connecter l'électronique sur D1. Cela utilise le même pin que le Serial1. Les deux ne marchent pas en même temps. Déclarer le pin interrupt 3 dans le code et le connecter l'électronique sur D3 sur la linkit. Cela utilise le même interrupt ou timer que la librairie Servo.h de l'arduino. Des oscilliations sur ce pin entraîne des sacades sur le servo.
